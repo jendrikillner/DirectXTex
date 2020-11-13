@@ -70,6 +70,7 @@ namespace
         OPT_PREFIX,
         OPT_SUFFIX,
         OPT_OUTPUTDIR,
+        OPT_OUTPUTFILE,
         OPT_TOLOWER,
         OPT_OVERWRITE,
         OPT_FILETYPE,
@@ -155,6 +156,7 @@ namespace
         { L"px",            OPT_PREFIX },
         { L"sx",            OPT_SUFFIX },
         { L"o",             OPT_OUTPUTDIR },
+        { L"of",            OPT_OUTPUTFILE },
         { L"l",             OPT_TOLOWER },
         { L"y",             OPT_OVERWRITE },
         { L"ft",            OPT_FILETYPE },
@@ -1079,6 +1081,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
     wchar_t szPrefix[MAX_PATH] = {};
     wchar_t szSuffix[MAX_PATH] = {};
     wchar_t szOutputDir[MAX_PATH] = {};
+    wchar_t szOutputFile[MAX_PATH] = {};
 
     // Initialize COM (needed for WIC)
     HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
@@ -1127,6 +1130,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             case OPT_PREFIX:
             case OPT_SUFFIX:
             case OPT_OUTPUTDIR:
+            case OPT_OUTPUTFILE:
             case OPT_FILETYPE:
             case OPT_GPU:
             case OPT_FEATURE_LEVEL:
@@ -1254,6 +1258,10 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 
             case OPT_OUTPUTDIR:
                 wcscpy_s(szOutputDir, MAX_PATH, pValue);
+                break;
+
+            case OPT_OUTPUTFILE:
+                wcscpy_s(szOutputFile, MAX_PATH, pValue);
                 break;
 
             case OPT_FILETYPE:
@@ -3092,6 +3100,11 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 *pchDot = 0;
 
             wcscat_s(pConv->szDest, MAX_PATH, szSuffix);
+
+            if (wcslen(szOutputFile) > 0)
+            {
+                wcscpy_s(pConv->szDest, MAX_PATH, szOutputFile);
+            }
 
             if (dwOptions & (DWORD64(1) << OPT_TOLOWER))
             {
